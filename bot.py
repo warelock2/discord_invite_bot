@@ -57,64 +57,6 @@ async def on_member_join(member):
 
     invite_cache = {inv.code: inv.uses for inv in invites}
 
-intents = discord.Intents.default()
-intents.members = True
-bot = commands.Bot(command_prefix='!', intents=intents)
-
-invite_cache = {}
-
-@bot.event
-async def on_ready():
-    print(f'Bot connected as {bot.user}')
-    guild = bot.get_guild(GUILD_ID)
-    invites = await guild.invites()
-    for invite in invites:
-        invite_cache[invite.code] = invite.uses
-    print('Invite cache initialized.')
-
-@bot.event
-async def on_member_join(member):
-    global invite_cache
-    guild = member.guild
-    invites = await guild.invites()
-    used_invite = None
-
-    for invite in invites:
-        if invite.code in invite_cache and invite.uses > invite_cache[invite.code]:
-            used_invite = invite
-            break
-
-    invite_cache = {inv.code: inv.uses for inv in invites}
-
-intents = discord.Intents.default()
-intents.members = True
-bot = commands.Bot(command_prefix='!', intents=intents)
-
-invite_cache = {}
-
-@bot.event
-async def on_ready():
-    print(f'Bot connected as {bot.user}')
-    guild = bot.get_guild(GUILD_ID)
-    invites = await guild.invites()
-    for invite in invites:
-        invite_cache[invite.code] = invite.uses
-    print('Invite cache initialized.')
-
-@bot.event
-async def on_member_join(member):
-    global invite_cache
-    guild = member.guild
-    invites = await guild.invites()
-    used_invite = None
-
-    for invite in invites:
-        if invite.code in invite_cache and invite.uses > invite_cache[invite.code]:
-            used_invite = invite
-            break
-
-    invite_cache = {inv.code: inv.uses for inv in invites}
-
     if used_invite:
         print(f'{member} joined using invite {used_invite.code}')
         role_map = {
