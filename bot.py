@@ -24,6 +24,9 @@ ROLE_04 = os.getenv('ROLE_04')
 INVITE_CODE_05 = os.getenv('INVITE_CODE_05')
 ROLE_05 = os.getenv('ROLE_05')
 
+INVITE_CODE_05 = os.getenv('INVITE_CODE_06')
+ROLE_05 = os.getenv('ROLE_06')
+
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix='!', intents=intents)
@@ -53,8 +56,8 @@ async def on_member_join(member):
 
     invite_cache = {inv.code: inv.uses for inv in invites}
 
-INVITE_CODE_01 = os.getenv('INVITE_CODE_01')
-ROLE_01 = os.getenv('ROLE_01')
+#INVITE_CODE_01 = os.getenv('INVITE_CODE_01')
+#ROLE_01 = os.getenv('ROLE_01')
 
 intents = discord.Intents.default()
 intents.members = True
@@ -122,6 +125,7 @@ async def on_member_join(member):
             INVITE_CODE_03: ROLE_03,
             INVITE_CODE_04: ROLE_04,
             INVITE_CODE_05: ROLE_05,
+            INVITE_CODE_06: ROLE_06,
         }
         role_name = role_map.get(used_invite.code)
         if role_name:
