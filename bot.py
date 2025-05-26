@@ -24,8 +24,8 @@ ROLE_04 = os.getenv('ROLE_04')
 INVITE_CODE_05 = os.getenv('INVITE_CODE_05')
 ROLE_05 = os.getenv('ROLE_05')
 
-INVITE_CODE_05 = os.getenv('INVITE_CODE_06')
-ROLE_05 = os.getenv('ROLE_06')
+INVITE_CODE_06 = os.getenv('INVITE_CODE_06')
+ROLE_06 = os.getenv('ROLE_06')
 
 intents = discord.Intents.default()
 intents.members = True
@@ -55,9 +55,6 @@ async def on_member_join(member):
             break
 
     invite_cache = {inv.code: inv.uses for inv in invites}
-
-#INVITE_CODE_01 = os.getenv('INVITE_CODE_01')
-#ROLE_01 = os.getenv('ROLE_01')
 
 intents = discord.Intents.default()
 intents.members = True
