@@ -29,6 +29,7 @@ ROLE_06 = os.getenv('ROLE_06')
 
 intents = discord.Intents.default()
 intents.members = True
+intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 invite_cache = {}
