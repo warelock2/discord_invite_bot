@@ -43,7 +43,6 @@ Step 3: Create Roles & Invite Links
 
 This bot expects to see the following secrets stored in Vault in the path of `secrets/discord/invite-bot`:
 
-|---|---|
 |Key|Value|
 |---|---|
 |DISCORD_GUILD_ID||
