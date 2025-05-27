@@ -47,18 +47,18 @@ This bot expects to see the following secrets stored in Vault in the path of `se
 |---|---|
 |DISCORD_GUILD_ID||
 |DISCORD_TOKEN||
-|INVITE_CODE_01|<Insert unique invite code string>|
-|INVITE_CODE_02|<Insert unique invite code string>|
-|INVITE_CODE_03|<Insert unique invite code string>|
-|INVITE_CODE_04|<Insert unique invite code string>|
-|INVITE_CODE_05|<Insert unique invite code string>|
-|INVITE_CODE_06|<Insert unique invite code string>|
-|ROLE_01|<Insert unique Discord role name>|
-|ROLE_02|<Insert unique Discord role name>|
-|ROLE_03|<Insert unique Discord role name>|
-|ROLE_04|<Insert unique Discord role name>|
-|ROLE_05|<Insert unique Discord role name>|
-|ROLE_06|<Insert unique Discord role name>|
+|INVITE_CODE_01|Insert unique invite code string|
+|INVITE_CODE_02|Insert unique invite code string|
+|INVITE_CODE_03|Insert unique invite code string|
+|INVITE_CODE_04|Insert unique invite code string|
+|INVITE_CODE_05|Insert unique invite code string|
+|INVITE_CODE_06|Insert unique invite code string|
+|ROLE_01|Insert unique Discord role name|
+|ROLE_02|Insert unique Discord role name|
+|ROLE_03|Insert unique Discord role name|
+|ROLE_04|Insert unique Discord role name|
+|ROLE_05|Insert unique Discord role name|
+|ROLE_06|Insert unique Discord role name|
 
 NOTE: Invite code strings come from Discord invite URLs:
 
