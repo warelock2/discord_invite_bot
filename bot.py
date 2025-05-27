@@ -1,32 +1,71 @@
 import discord
 import os
+import hvac
+import time
+import threading
 from discord.ext import commands
 from dotenv import load_dotenv
+import sys
+sys.stdout.reconfigure(line_buffering=True)
 
-# Load from .env file if it exists
+# Load environment variables
 load_dotenv()
+VAULT_ADDR = os.getenv("VAULT_ADDR")
+VAULT_USERNAME = os.getenv("VAULT_USERNAME")
+VAULT_PASSWORD = os.getenv("VAULT_PASSWORD")
 
-TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD_ID = int(os.getenv('DISCORD_GUILD_ID'))
+# Initialize Vault client (no token yet)
+client = hvac.Client(url=VAULT_ADDR, verify="certs/vault.crt")
 
-INVITE_CODE_01 = os.getenv('INVITE_CODE_01')
-ROLE_01 = os.getenv('ROLE_01')
+def login_and_set_token():
+    """Login using userpass and set the client token."""
+    response = client.auth.userpass.login(
+        username=VAULT_USERNAME,
+        password=VAULT_PASSWORD
+    )
+    client.token = response['auth']['client_token']
+    return response['auth']['lease_duration']  # Token TTL in seconds
 
-INVITE_CODE_02 = os.getenv('INVITE_CODE_02')
-ROLE_02 = os.getenv('ROLE_02')
+def token_refresher():
+    """Background thread to re-login and refresh the Vault token."""
+    while True:
+        ttl = login_and_set_token()
+        print(f"[Vault] Logged in via userpass. Token TTL: {ttl}s")
+        # Refresh 30s before expiration
+        sleep_time = max(60, ttl - 30)
+        time.sleep(sleep_time)
 
-INVITE_CODE_03 = os.getenv('INVITE_CODE_03')
-ROLE_03 = os.getenv('ROLE_03')
+# Start token refresher thread
+threading.Thread(target=token_refresher, daemon=True).start()
 
-INVITE_CODE_04 = os.getenv('INVITE_CODE_04')
-ROLE_04 = os.getenv('ROLE_04')
+# Wait until token is acquired
+while not client.is_authenticated():
+    time.sleep(1)
 
-INVITE_CODE_05 = os.getenv('INVITE_CODE_05')
-ROLE_05 = os.getenv('ROLE_05')
+# Fetch secrets once authenticated
+secrets = client.secrets.kv.v2.read_secret_version(
+    path='discord/invite-bot',
+    mount_point='secrets'
+)['data']['data']
 
-INVITE_CODE_06 = os.getenv('INVITE_CODE_06')
-ROLE_06 = os.getenv('ROLE_06')
+# Discord config
+TOKEN = secrets['DISCORD_TOKEN']
+GUILD_ID = int(secrets['DISCORD_GUILD_ID'])
 
+INVITE_CODE_01 = secrets['INVITE_CODE_01']
+ROLE_01 = secrets['ROLE_01']
+INVITE_CODE_02 = secrets['INVITE_CODE_02']
+ROLE_02 = secrets['ROLE_02']
+INVITE_CODE_03 = secrets['INVITE_CODE_03']
+ROLE_03 = secrets['ROLE_03']
+INVITE_CODE_04 = secrets['INVITE_CODE_04']
+ROLE_04 = secrets['ROLE_04']
+INVITE_CODE_05 = secrets['INVITE_CODE_05']
+ROLE_05 = secrets['ROLE_05']
+INVITE_CODE_06 = secrets['INVITE_CODE_06']
+ROLE_06 = secrets['ROLE_06']
+
+# Set up Discord bot
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
