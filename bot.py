@@ -47,7 +47,8 @@ while not client.is_authenticated():
 # Fetch secrets once authenticated
 secrets = client.secrets.kv.v2.read_secret_version(
     path='discord/invite-bot',
-    mount_point='secrets'
+    mount_point='secrets',
+    raise_on_deleted_version=True
 )['data']['data']
 
 # Discord config
