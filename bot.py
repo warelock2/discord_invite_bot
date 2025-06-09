@@ -3,6 +3,8 @@ import os
 import hvac
 import time
 import threading
+import asyncio
+import signal
 from discord.ext import commands
 from dotenv import load_dotenv
 import sys
@@ -117,5 +119,19 @@ async def on_member_join(member):
     else:
         print(f'No matching invite found for {member}')
 
+# Graceful shutdown handler
+def handle_shutdown(signum, frame):
+    print(f"Received signal {signum}. Shutting down cleanly...")
+    future = asyncio.run_coroutine_threadsafe(bot.close(), bot.loop)
+    try:
+        future.result(timeout=10)
+    except Exception as e:
+        print(f"Error during shutdown: {e}")
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, handle_shutdown)
+signal.signal(signal.SIGTERM, handle_shutdown)
+
+# Run bot
 bot.run(TOKEN)
 
