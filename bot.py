@@ -8,6 +8,7 @@ import signal
 from discord.ext import commands
 from dotenv import load_dotenv
 import sys
+
 sys.stdout.reconfigure(line_buffering=True)
 
 # Load environment variables
@@ -28,19 +29,35 @@ def login_and_set_token():
     client.token = response['auth']['client_token']
     return response['auth']['lease_duration']  # Token TTL in seconds
 
+# Retry loop for initial login
+while True:
+    try:
+        ttl = login_and_set_token()
+        print(f"[Vault] Initial login successful. TTL: {ttl}s")
+        break
+    except Exception as e:
+        print(f"[Vault] Initial login failed (possibly sealed): {e}")
+        print("[Vault] Will retry in 60 seconds...")
+        time.sleep(60)
+
 def token_refresher():
     """Background thread to re-login and refresh the Vault token."""
     while True:
-        ttl = login_and_set_token()
-        print(f"[Vault] Logged in via userpass. Token TTL: {ttl}s")
-        # Refresh 30s before expiration
-        sleep_time = max(60, ttl - 30)
-        time.sleep(sleep_time)
+        try:
+            ttl = login_and_set_token()
+            print(f"[Vault] Re-login successful. TTL: {ttl}s")
+            # Refresh 30 seconds before expiration, or at least every 60s
+            sleep_time = max(60, ttl - 30)
+            time.sleep(sleep_time)
+        except Exception as e:
+            print(f"[Vault] Re-login failed (possibly sealed): {e}")
+            print("[Vault] Will retry in 60 seconds...")
+            time.sleep(60)
 
 # Start token refresher thread
 threading.Thread(target=token_refresher, daemon=True).start()
 
-# Wait until token is acquired
+# Wait until token is definitely set (should be true after initial loop)
 while not client.is_authenticated():
     time.sleep(1)
 
