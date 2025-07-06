@@ -4,14 +4,13 @@ Requires=docker.service
 After=docker.service
 
 [Service]
-Type=oneshot
-RemainAfterExit=yes
+Type=simple
 WorkingDirectory=/home/warelock/projects/discord_invite_bot
-ExecStart=/usr/bin/docker compose up --build -d
+ExecStart=/usr/bin/docker compose up --build
 ExecStop=/usr/bin/docker compose down
-TimeoutStartSec=0
-Restart=on-failure
+Restart=always
 RestartSec=3
 
 [Install]
 WantedBy=multi-user.target
+
